@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE generatorConfiguration
+        PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
+        "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
+<!--根节点，没有任何属性-->
+<generatorConfiguration>
+
+    <!--导入(外部)属性配置文件，而且是需要解析使用的-->
+    <!--通过resource或者url指定属性文件的位置-->
+    <properties resource="db.properties"></properties>
+
+    <!--指定特定数据库的jdbc驱动Jar包的位置-->
+    <!--最常见的使用这个属性指定驱动的路径-->
+    <classPathEntry location="${driverLocation}"/>
+
+    <!--指定生成一组对象的环境-->
+    <context id="default" targetRuntime="MyBatis3">
+
+        <!--生成表或字段的备注信息,optional，旨在创建class时，对注释进行控制-->
+        <commentGenerator>
+            <property name="suppressDate" value="true" />
+            <property name="suppressAllComments" value="true" />
+        </commentGenerator>
+
+
+        <!-- 配置数据库连接 -->
+        <jdbcConnection driverClass="${driverClassName}"
+                        connectionURL="${url}"
+                        userId="${username}"
+                        password="${password}">
+        </jdbcConnection>
+
+        <!--指定JDBC类型和Java类型如何转换-->
+        <javaTypeResolver >
+            <property name="forceBigDecimals" value="false" />
+        </javaTypeResolver>
+
+
+        <!-- 指定javabean生成的位置 -->
+        <javaModelGenerator targetPackage= "com.rmall.pojo"
+                            targetProject=".\src\main\java">
+            <!--是否允许子包，这里设置为false-->
+            <property name="enableSubPackages" value="false" />
+            <!--是否对model添加构造函数-->
+            <property name="constructorBased" value="true" />
+            <!--是否对类char类型的列的数据进行trim操作-->
+            <property name="trimStrings" value="true" />
+            <!--建立的model对象是否不可改变，如果为true即生成的model对象不会有setter方法，只有构造方法-->
+            <property name="immutable" value="false" />
+
+        </javaModelGenerator>
+
+
+
+        <!-- 指定sql映射文件的生成位置  -->
+        <sqlMapGenerator targetPackage="mapper"
+                         targetProject=".\src\main\resources">
+            <property name="enableSubPackages" value="false" />
+        </sqlMapGenerator>
+
+
+        <!-- 指定dao接口生成的位置,mapper接口 -->
+        <javaClientGenerator type="XMLMAPPER"
+                             targetPackage="com.rmall.dao"
+                             targetProject=".\src\main\java" >
+
+            <property name="enableSubPackages" value="false" />
+        </javaClientGenerator>
+
+
+        <!--用来配置要通过内省的表。只有配置的才会生成实体类和其他文件-->
+        <table tableName="rmall_shipping" domainObjectName="Shipping" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"></table>
+        <table tableName="rmall_cart" domainObjectName="Cart" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"></table>
+        <table tableName="rmall_cart_item" domainObjectName="CartItem" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"></table>
+        <table tableName="rmall_category" domainObjectName="Category" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"></table>
+        <table tableName="rmall_order" domainObjectName="Order" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"></table>
+        <table tableName="rmall_order_item" domainObjectName="OrderItem" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"></table>
+        <table tableName="rmall_pay_info" domainObjectName="PayInfo" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"></table>
+        <table tableName="rmall_product" domainObjectName="Product" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false">
+            <columnOverride column="detail" jdbcType="VARCHAR" />
+            <columnOverride column="sub_images" jdbcType="VARCHAR" />
+        </table>
+        <table tableName="rmall_user" domainObjectName="User" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"></table>
+    </context>
+
+</generatorConfiguration>

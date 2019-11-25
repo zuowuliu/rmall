@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+     http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+     http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
+     http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
+
+
+    <!--配置一个包自动扫描-->
+    <context:component-scan base-package="com.rmall" annotation-config="true"/>
+
+    <!--这是为了简化spring提供的，不需要再配置PropertyPlaceholderConfigurer对象了-->
+    <context:property-placeholder location="classpath:db.properties"></context:property-placeholder>
+
+    <!--配置数据源-->
+    <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+        <!--将db.properties引入之后就可以使用${}来引入其中的值了，目的是为了配置这个数据源的基本信息-->
+        <property name="driverClassName" value="${driverClassName}"></property>
+        <property name="url" value="${url}"></property>
+        <property name="username" value="${username}"></property>
+        <property name="password" value="${password}"></property>
+        <!--连接池启动时初始化的值-->
+        <property name="initialSize" value="${initialSize}"></property>
+        <!--连接池的最大值-->
+        <property name="maxActive" value="${maxActive}"></property>
+        <!--连接池的最大空闲值(当经过一个高峰时间过后，连接池可以慢慢将已经用不到的连接慢慢释放一部分，一直减少到maxIdle为止)-->
+        <property name="maxIdle" value="${maxIdle}"></property>
+        <!--连接池的最小空闲值(当空闲的连接数少于阈值的时候，连接池就会预申请一些连接，以免洪峰来临的时候来不及申请)-->
+        <property name="minIdle" value="${minIdle}"></property>
+        <!--最大的建立连接的等待时间。如果超过此时间将会接到异常。设为-1的话就表示没有限制-->
+        <property name="maxWait" value="${maxWait}"></property>
+        <!--默认自动提交（数据库事务）-->
+        <property name="defaultAutoCommit" value="${defaultAutoCommit}"></property>
+        <!--连接的默认超时时间，默认为半小时-->
+        <property name="minEvictableIdleTimeMillis" value="${minEvictableIdleTimeMillis}"></property>
+        <!--以这个时间间隔去进行线程的失效检查-->
+        <property name="timeBetweenEvictionRunsMillis" value="40000"></property>
+        <!--检查连接是否有效-->
+        <property name="testWhileIdle" value="true"></property>
+        <!--检查连接有效性的SQL语句-->
+        <property name="validationQuery" value="SELECT 1 FROM dual"></property>
+    </bean>
+
+    <!--整合spring和mybatis，配置sqlSessionFactory-->
+    <!--pageHelper有两种配置方式，但是在这里可以不用mybatisConfig.xml，不去配其他的一些东西-->
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="dataSource"></property>
+        <property name="mapperLocations" value="classpath*:mapper/*Mapper.xml"></property>
+        <!--分页插件配置，省略了mybatisConfig.xml(本来这个是要配在mybatisConfig.xml里面的)-->
+        <property name="plugins">
+            <array>
+                <bean class="com.github.pagehelper.PageHelper">
+                    <property name="properties">
+                        <value>
+                            dialect=mysql
+                        </value>
+                    </property>
+                </bean>
+            </array>
+        </property>
+    </bean>
+
+    <!--配置dao的接口的扫描-->
+    <bean id="mapperScannerConfigurer" class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="basePackage" value="com.rmall.dao"></property>
+    </bean>
+
+    <!--配置事务-->
+    <tx:annotation-driven transaction-manager="transactionManager" proxy-target-class="true"></tx:annotation-driven>
+    <!-- 事务管理 -->
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="rollbackOnCommitFailure" value="true"/>
+        <!--当提交事务失败的时候回滚事务-->
+    </bean>
+</beans>
