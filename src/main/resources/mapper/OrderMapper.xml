@@ -198,4 +198,40 @@
       update_time = now()
     where id = #{id,jdbcType=INTEGER}
   </update>
+
+  <!--查询是否存在需要的支付的指定的订单-->
+  <select id="selectByUserIdAndOrderNo" resultMap="BaseResultMap" parameterType="map">
+    select
+    <include refid="Base_Column_List"/>
+    from rmall_order
+    where user_id = #{userId}
+    and
+    order_no = #{orderNo}
+  </select>
+
+  <!--回调时使用-->
+  <select id="selectByOrderNo" resultMap="BaseResultMap" parameterType="long">
+    select
+    <include refid="Base_Column_List"/>
+    from rmall_order
+    where order_no = #{orderNo}
+  </select>
+
+  <!--根据userId来获取order-->
+  <select id="selectByUserId" resultMap="BaseResultMap" parameterType="integer">
+    select
+    <include refid="Base_Column_List"/>
+    from rmall_order
+    where user_id = #{userId}
+    order by create_time desc
+  </select>
+
+  <!--查询所有的order-->
+  <select id="selectAll" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List"/>
+    from rmall_order
+    order by create_time desc
+  </select>
+
 </mapper>

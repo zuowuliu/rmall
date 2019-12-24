@@ -116,4 +116,11 @@
       update_time = now()
     where id = #{id,jdbcType=INTEGER}
   </update>
+  <!--获取子节点的目录信息-->
+  <select id="selectChildCategoryByParentId" parameterType="int" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from rmall_category
+    where parent_id = #{parent_id}
+  </select>
 </mapper>

@@ -14,10 +14,19 @@
     <!--配置一个包自动扫描-->
     <context:component-scan base-package="com.rmall" annotation-config="true"/>
 
-    <!--这是为了简化spring提供的，不需要再配置PropertyPlaceholderConfigurer对象了-->
-    <context:property-placeholder location="classpath:db.properties"></context:property-placeholder>
-
-    <!--配置数据源-->
+    <!--导入db.properties-->
+    <bean id="propertyConfigurer"
+          class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="order" value="2"/>
+        <property name="ignoreUnresolvablePlaceholders" value="true"/>
+        <property name="locations">
+            <list>
+                <value>classpath:db.properties</value>
+            </list>
+        </property>
+        <property name="fileEncoding" value="utf-8"/>
+    </bean>
+    <!--配置数据源(之前使用的数据源是c3p0的)-->
     <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
         <!--将db.properties引入之后就可以使用${}来引入其中的值了，目的是为了配置这个数据源的基本信息-->
         <property name="driverClassName" value="${driverClassName}"></property>
@@ -69,7 +78,6 @@
     <bean id="mapperScannerConfigurer" class="org.mybatis.spring.mapper.MapperScannerConfigurer">
         <property name="basePackage" value="com.rmall.dao"></property>
     </bean>
-
     <!--配置事务-->
     <tx:annotation-driven transaction-manager="transactionManager" proxy-target-class="true"></tx:annotation-driven>
     <!-- 事务管理 -->
@@ -78,4 +86,5 @@
         <property name="rollbackOnCommitFailure" value="true"/>
         <!--当提交事务失败的时候回滚事务-->
     </bean>
+
 </beans>

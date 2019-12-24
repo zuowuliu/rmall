@@ -163,4 +163,39 @@
       update_time = now()
     where id = #{id,jdbcType=INTEGER}
   </update>
+  <!--用于获取orderItem商品信息详情，这是在数据库里面通过订单模块存储好了的-->
+  <!--因为有可能一个用户的一个订单购买了多个商品，符合实际情况-->
+  <select id="getByOrderNoUserId" resultMap="BaseResultMap" parameterType="map">
+    select
+    <include refid="Base_Column_List"/>
+    from rmall_order_item
+    where
+    order_no = #{orderNo}
+    and
+    user_id = #{userId}
+  </select>
+
+  <!--批量插入，更新orderItem-->
+  <insert id="batchInsert" parameterType="list">
+    insert into rmall_order_item (id, order_no, user_id,
+      product_id, product_name, product_image,
+      current_unit_price, quantity, total_price,
+      create_time, update_time)
+    values
+    <foreach collection="orderItemList" index="index" item="item" separator=",">
+      (
+        #{item.id}, #{item.orderNo}, #{item.userId}, #{item.productId}, #{item.productName}
+      , #{item.productImage}, #{item.currentUnitPrice}, #{item.quantity}, #{item.totalPrice}, now(), now()
+      )
+    </foreach>
+  </insert>
+
+  <!--管理员获取OrderItem-->
+  <select id="getByOrderNo" resultMap="BaseResultMap" parameterType="long">
+    select
+    <include refid="Base_Column_List"/>
+    from rmall_order_item
+    where order_no = #{orderNo}
+
+  </select>
 </mapper>

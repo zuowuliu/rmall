@@ -116,4 +116,68 @@
       update_time = now()
     where id = #{id,jdbcType=INTEGER}
   </update>
+<!--用于新增商品的时候-->
+  <select id="selectCartByUserIdProductId" resultMap="BaseResultMap" parameterType="map">
+    select
+    <include refid="Base_Column_List"/>
+    from rmall_cart
+    where user_id=#{userId}
+    and product_id=#{productId}
+  </select>
+<!--用于在限制购物车的时候-->
+  <select id="selectCartByUserId" parameterType="integer" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List"/>
+    from rmall_cart
+    where
+    user_id=#{userId}
+  </select>
+
+  <!--用于查询用户购物车里面已处于选中状态的商品数量-->
+  <select id="selectCartProductCheckedStatusByUserId" resultType="integer" parameterType="integer">
+    select
+    count(1)
+    from rmall_cart
+    where checked = 0
+    and user_id = #{userId}
+
+  </select>
+
+  <!--用于删除购物车中的商品-->
+  <delete id="deleteByUserIdProductIds" parameterType="map">
+    delete from rmall_cart
+    where user_id=#{userId}
+    <if test="productIdList != null">
+      and product_id in
+      <foreach collection="productIdList" item="item" index="index" open="(" separator="," close=")">
+        #{item}
+      </foreach>
+    </if>
+  </delete>
+
+  <!--用于全选、全不选、指定全选、指定全不选-->
+  <update id="checkedOrUncheckedProduct" parameterType="map">
+    update rmall_cart
+    set checked = #{checked},
+    update_time = now()
+    where user_id=#{userId}
+    <if test="productId !=null">
+      and product_id = #{productId}
+    </if>
+  </update>
+
+  <!--获取当前用户购物车商品数量-->
+  <select id="selectCartProductCount" parameterType="integer" resultType="integer">
+    <!--IFNULL，如果传进来的userId查不出来的话就会返回一个空值，但是前面的mapper里面的这个映射对应的返回值应该是int,若为空的话就返回0-->
+    select IFNULL(sum(quantity),0) as count from rmall_cart where user_id=#{userId}
+  </select>
+
+  <!--查询处于被选中状态的购物车信息，每一种商品对应一条cart表信息-->
+  <select id="selectCheckedCartByUserId" parameterType="integer" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List"/>
+    from rmall_cart
+    where user_id = #{userId}
+    and checked = 1
+  </select>
 </mapper>

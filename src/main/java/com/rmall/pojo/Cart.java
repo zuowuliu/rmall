@@ -9,9 +9,9 @@ public class Cart {
 
     private Integer productId;
 
-    private Integer quantity;
+    private Integer quantity;//商品的数量(指定商品的数量)
 
-    private Integer checked;
+    private Integer checked;//商品是否已经被勾选
 
     private Date createTime;
 
