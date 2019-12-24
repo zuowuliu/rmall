@@ -109,5 +109,23 @@ public class CategoryManageController {
         return iCategoryService.getCategoryIdAndDeepChildCategoryId(categoryId);
     }
 
+//    /**
+//     * 获取当前目录的id，并且递归其子节点的id
+//     * */
+//    @RequestMapping(value = "get_deep_category.do",method = RequestMethod.POST)
+//    @ResponseBody
+//    public ServerResponse<List<Integer>> getCategoryIdAndDeepChildCategoryId(HttpSession session,@RequestParam(value = "categoryId",defaultValue = "0") Integer categoryId){
+//        //判断登录的用户是否是管理员
+//        User user = (User)session.getAttribute(Const.CURRENT_USER);
+//        if(user == null){
+//            return ServerResponse.createByError(ResponseCode.NEED_LOGIN.getCode(), "当前无用户登录，请登录后重试");
+//        }
+//        //判断登录的当前用户是否是管理员
+//        ServerResponse ifCurrentUserIsAdminResponse = iUserService.checkCurrentUserIfAdminUser(user);
+//        if(!ifCurrentUserIsAdminResponse.isSuccess()){
+//            return ServerResponse.createByError("当前登录用户不是管理员，无操作分类权限");
+//        }
+//        return iCategoryService.getCategoryIdAndDeepChildCategoryId(categoryId);
+//    }
 
 }
