@@ -33,3 +33,4 @@ target/
 #system_igonre
 .DS_Store
 Thumbs.db
+/logs
