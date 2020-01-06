@@ -5,6 +5,9 @@ import com.rmall.common.ResponseCode;
 import com.rmall.common.ServerResponse;
 import com.rmall.pojo.User;
 import com.rmall.service.IUserService;
+import com.rmall.util.CookieUtil;
+import com.rmall.util.JsonUtil;
+import com.rmall.util.RedisPoolUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 @Controller
@@ -32,12 +36,17 @@ public class UserController {
      * */
     @RequestMapping(value = "login.do",method = RequestMethod.POST)
     @ResponseBody
-    public ServerResponse<User> login(String username, String password, HttpSession session){
+    public ServerResponse<User> login(String username, String password, HttpSession session, HttpServletResponse response){
 
         ServerResponse<User> serverResponse = iUserService.login(username, password);
         if(serverResponse.isSuccess()){
-            //同时将user的信息添加进session中(重要)
-            session.setAttribute(Const.CURRENT_USER, serverResponse.getData());
+            //同时将user的信息添加进session中(重要)，替换为将user的信息添加进redis缓存中并设置失效时间
+            //session.setAttribute(Const.CURRENT_USER, serverResponse.getData());
+
+            //这里将sessionID当做token写进了cookie中并传进response中，并且cookie的key是rmall_login_token，值为token即sessionID
+            CookieUtil.writeLoginToken(response, session.getId());
+            RedisPoolUtil.setEx(session.getId(), JsonUtil.obj2String(serverResponse.getData()), Const.RedisCacheExtime.REDIS_SESSION_EXTIME);
+
         }
         return serverResponse;
     }
