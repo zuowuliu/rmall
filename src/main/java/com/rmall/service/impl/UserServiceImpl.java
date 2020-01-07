@@ -120,6 +120,9 @@ public class UserServiceImpl implements IUserService {
 
     /**
      * 验证用户的问题是否正确
+     *
+     * 验证完用户密码的正确与否就是最后的一步了，所以需要验证是否是相同的用户在修改自己的密码，防止恶意的篡改
+     * 使用token保证安全性，先生成后存到缓存中，并传回前端，后面需要再传入此token与缓存中的token进行比较验证是否正确
      * */
     public ServerResponse<String> checkAnswer(String username,String question,String answer){
         int resultCount = userMapper.checkAnswer(username,question,answer);
@@ -154,6 +157,7 @@ public class UserServiceImpl implements IUserService {
         if(StringUtils.isBlank(token)){
             return ServerResponse.createByError("token无效或者已过期");
         }
+        //需要在此处传进forgetPwdToken来与缓存中的token来比较验证是否是在同一时间段的该用户在修改自己的密码保证安全性
         if(StringUtils.equals(forgetPwdToken, token)){
             String md5Password = MD5Util.MD5EncodeUtf8(passwordNew);
             //更新用户的密码
