@@ -59,6 +59,7 @@ public class CookieUtil {
                 if(StringUtils.equals(cookie.getName(), COOKIE_NAME)){
                     cookie.setDomain(COOKIE_DOMAIN);
                     cookie.setPath("/");
+                    //删除的关键步骤
                     cookie.setMaxAge(0);
                     logger.info("del cookieName:{},cookieValue:{}",cookie.getName(),cookie.getValue());
                     response.addCookie(cookie);
