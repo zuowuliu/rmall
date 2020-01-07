@@ -38,7 +38,7 @@ public class CookieUtil {
     //往响应中写cookie
     public static void writeLoginToken(HttpServletResponse response,String token){
         //new Cookie的时候是通过key-value的形式来new的
-        //这里的cookie的名字就是rmall_login_token，而值就是token,这里的token就是sessionID
+        //这里的cookie的名字就是rmall_login_token，而值就是token,这里的token就是sessionID,装在一级域名下的
         Cookie cookie = new Cookie(COOKIE_NAME, token);
         cookie.setDomain(COOKIE_DOMAIN);
         //将cookie设置在根目录下面

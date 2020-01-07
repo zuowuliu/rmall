@@ -59,7 +59,9 @@ public class UserController {
     public ServerResponse<String> loginOut(HttpServletRequest httpServletRequest,HttpServletResponse httpServletResponse){
         //session.removeAttribute(Const.CURRENT_USER);
         String loginToken = CookieUtil.readLoginToken(httpServletRequest);
+        //这一步让浏览器中保存下来的cookie消失
         CookieUtil.delLoginToken(httpServletRequest, httpServletResponse);
+        //这一步让redis中的loginToken消失
         RedisPoolUtil.del(loginToken);
         return ServerResponse.createBySuccess("退出登录成功","退出登录");
     }
