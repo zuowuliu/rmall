@@ -6,13 +6,18 @@ import com.rmall.common.ServerResponse;
 import com.rmall.pojo.User;
 import com.rmall.service.IOrderService;
 import com.rmall.service.IUserService;
+import com.rmall.util.CookieUtil;
+import com.rmall.util.JsonUtil;
+import com.rmall.util.RedisPoolUtil;
 import com.rmall.vo.OrderVo;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 /**
@@ -37,9 +42,14 @@ public class OrderManageController {
      * */
     @RequestMapping("list.do")
     @ResponseBody
-    public ServerResponse<PageInfo> orderList(HttpSession session, @RequestParam(value = "pageNum",defaultValue = "1")Integer pageNum,
+    public ServerResponse<PageInfo> orderList(HttpServletRequest httpServletRequest, @RequestParam(value = "pageNum",defaultValue = "1")Integer pageNum,
                                               @RequestParam(value = "pageSize",defaultValue = "10") Integer pageSize){
-        User user = (User)session.getAttribute(Const.CURRENT_USER);
+        String loginToken = CookieUtil.readLoginToken(httpServletRequest);
+        if(StringUtils.isEmpty(loginToken)){
+            return ServerResponse.createByError("用户未登录，获取用户信息失败");
+        }
+        String userJsonStr = RedisPoolUtil.get(loginToken);
+        User user = JsonUtil.string2Obj(userJsonStr, User.class);
         if(user == null){
             return ServerResponse.createByError("当前没有管理员登录，请登录后重试");
         }
@@ -55,8 +65,13 @@ public class OrderManageController {
      * */
     @RequestMapping("detail.do")
     @ResponseBody
-    public ServerResponse<OrderVo> orderDetail(HttpSession session, long orderNo){
-        User user = (User)session.getAttribute(Const.CURRENT_USER);
+    public ServerResponse<OrderVo> orderDetail(HttpServletRequest httpServletRequest, long orderNo){
+        String loginToken = CookieUtil.readLoginToken(httpServletRequest);
+        if(StringUtils.isEmpty(loginToken)){
+            return ServerResponse.createByError("用户未登录，获取用户信息失败");
+        }
+        String userJsonStr = RedisPoolUtil.get(loginToken);
+        User user = JsonUtil.string2Obj(userJsonStr, User.class);
         if(user == null){
             return ServerResponse.createByError("当前没有管理员登录，请登录后重试");
         }
@@ -72,9 +87,14 @@ public class OrderManageController {
      * */
     @RequestMapping("search.do")
     @ResponseBody
-    public ServerResponse<PageInfo> orderSearch(HttpSession session,long orderNo, @RequestParam(value = "pageNum",defaultValue = "1")Integer pageNum,
+    public ServerResponse<PageInfo> orderSearch(HttpServletRequest httpServletRequest,long orderNo, @RequestParam(value = "pageNum",defaultValue = "1")Integer pageNum,
                                               @RequestParam(value = "pageSize",defaultValue = "10") Integer pageSize){
-        User user = (User)session.getAttribute(Const.CURRENT_USER);
+        String loginToken = CookieUtil.readLoginToken(httpServletRequest);
+        if(StringUtils.isEmpty(loginToken)){
+            return ServerResponse.createByError("用户未登录，获取用户信息失败");
+        }
+        String userJsonStr = RedisPoolUtil.get(loginToken);
+        User user = JsonUtil.string2Obj(userJsonStr, User.class);
         if(user == null){
             return ServerResponse.createByError("当前没有管理员登录，请登录后重试");
         }
@@ -91,8 +111,13 @@ public class OrderManageController {
      * */
     @RequestMapping("send_goods.do")
     @ResponseBody
-    public ServerResponse<String> orderSendGoods(HttpSession session,long orderNo){
-        User user = (User)session.getAttribute(Const.CURRENT_USER);
+    public ServerResponse<String> orderSendGoods(HttpServletRequest httpServletRequest,long orderNo){
+        String loginToken = CookieUtil.readLoginToken(httpServletRequest);
+        if(StringUtils.isEmpty(loginToken)){
+            return ServerResponse.createByError("用户未登录，获取用户信息失败");
+        }
+        String userJsonStr = RedisPoolUtil.get(loginToken);
+        User user = JsonUtil.string2Obj(userJsonStr, User.class);
         if(user == null){
             return ServerResponse.createByError("当前没有管理员登录，请登录后重试");
         }

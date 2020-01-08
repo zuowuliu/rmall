@@ -2,11 +2,11 @@ package com.rmall.service.impl;
 
 import com.rmall.common.Const;
 import com.rmall.common.ServerResponse;
-import com.rmall.common.TokenCache;
 import com.rmall.dao.UserMapper;
 import com.rmall.pojo.User;
 import com.rmall.service.IUserService;
 import com.rmall.util.MD5Util;
+import com.rmall.util.RedisPoolUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -129,8 +129,9 @@ public class UserServiceImpl implements IUserService {
         if(resultCount > 0){
             //生成一个UUID序列，然后再考虑将之加到缓存中去
             String forgetPwdToken = UUID.randomUUID().toString();
-            //setKey的过程localCache.put(key, value)会把key和对应的token的值加进去
-            TokenCache.setKey(TokenCache.TOKEN_PREFIX+username, forgetPwdToken);
+            //setKey的过程localCache.put(key, value)会把key和对应的token的值加进去tomcat1
+            //TokenCache.setKey(TokenCache.TOKEN_PREFIX+username, forgetPwdToken);
+            RedisPoolUtil.setEx(Const.TOKEN_PREFIX+username, forgetPwdToken, 60*60*12);
             return ServerResponse.createBySuccess(forgetPwdToken);
         }
         return ServerResponse.createByError("问题的答案错误");
@@ -151,8 +152,9 @@ public class UserServiceImpl implements IUserService {
             //因为checkValid的时候，校验成功是用户不存在的情况
             return ServerResponse.createByError("用户不存在");
         }
-        //在本地缓存中取TokenCache.TOKEN_PREFIX + username对应的token的值
-        String token = TokenCache.getKey(TokenCache.TOKEN_PREFIX + username);
+        //在本地缓存中取TokenCache(已删除).TOKEN_PREFIX + username对应的token的值
+        //String token = TokenCache.getKey(TokenCache.TOKEN_PREFIX + username);
+        String token = RedisPoolUtil.get(Const.TOKEN_PREFIX + username);
         //StringUtils的equals（a,b）方法即使a为空也不会报异常，但如果是普通的object的equals方法就会报空指针异常
         if(StringUtils.isBlank(token)){
             return ServerResponse.createByError("token无效或者已过期");
@@ -190,6 +192,33 @@ public class UserServiceImpl implements IUserService {
         }
         return ServerResponse.createByError("修改密码失败");
     }
+
+
+    /**
+     * 更新用户的信息
+     * */
+
+    public ServerResponse<User> updateInformation(User user){
+        //username是不能被更新的
+        //email也要进行一个校验,校验新的email是不是已经存在,并且存在的email如果相同的话,不能是我们当前的这个用户的.
+        int resultCount = userMapper.checkEmailByUserId(user.getEmail(),user.getId());
+        if(resultCount > 0){
+            return ServerResponse.createByError("email已存在,请更换email再尝试更新");
+        }
+        User updateUser = new User();
+        updateUser.setId(user.getId());
+        updateUser.setEmail(user.getEmail());
+        updateUser.setPhone(user.getPhone());
+        updateUser.setQuestion(user.getQuestion());
+        updateUser.setAnswer(user.getAnswer());
+
+        int updateCount = userMapper.updateByPrimaryKeySelective(updateUser);
+        if(updateCount > 0){
+            return ServerResponse.createBySuccess("更新个人信息成功",updateUser);
+        }
+        return ServerResponse.createByError("更新个人信息失败");
+    }
+
 
     /**
      * 登录状态下获取用户的详细信息给前台

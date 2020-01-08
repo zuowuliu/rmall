@@ -8,6 +8,9 @@ public class Const {
     //用于在session中记录当前登录的用户的信息的key
     public static final String CURRENT_USER = "currentUser";
 
+    //token的前缀
+    public static final String TOKEN_PREFIX = "token_";
+
     //缓存设置的key的时间
     public interface RedisCacheExtime{
         int REDIS_SESSION_EXTIME = 60 * 30;//设置成30分钟
