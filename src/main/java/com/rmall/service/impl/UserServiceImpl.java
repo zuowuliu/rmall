@@ -6,7 +6,7 @@ import com.rmall.dao.UserMapper;
 import com.rmall.pojo.User;
 import com.rmall.service.IUserService;
 import com.rmall.util.MD5Util;
-import com.rmall.util.RedisPoolUtil;
+import com.rmall.util.RedisShardedPoolUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -131,7 +131,7 @@ public class UserServiceImpl implements IUserService {
             String forgetPwdToken = UUID.randomUUID().toString();
             //setKey的过程localCache.put(key, value)会把key和对应的token的值加进去tomcat1
             //TokenCache.setKey(TokenCache.TOKEN_PREFIX+username, forgetPwdToken);
-            RedisPoolUtil.setEx(Const.TOKEN_PREFIX+username, forgetPwdToken, 60*60*12);
+            RedisShardedPoolUtil.setEx(Const.TOKEN_PREFIX+username, forgetPwdToken, 60*60*12);
             return ServerResponse.createBySuccess(forgetPwdToken);
         }
         return ServerResponse.createByError("问题的答案错误");
@@ -154,7 +154,7 @@ public class UserServiceImpl implements IUserService {
         }
         //在本地缓存中取TokenCache(已删除).TOKEN_PREFIX + username对应的token的值
         //String token = TokenCache.getKey(TokenCache.TOKEN_PREFIX + username);
-        String token = RedisPoolUtil.get(Const.TOKEN_PREFIX + username);
+        String token = RedisShardedPoolUtil.get(Const.TOKEN_PREFIX + username);
         //StringUtils的equals（a,b）方法即使a为空也不会报异常，但如果是普通的object的equals方法就会报空指针异常
         if(StringUtils.isBlank(token)){
             return ServerResponse.createByError("token无效或者已过期");

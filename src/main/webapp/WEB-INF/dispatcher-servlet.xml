@@ -8,7 +8,9 @@
 	http://www.springframework.org/schema/mvc
 	http://www.springframework.org/schema/mvc/spring-mvc.xsd">
 
-    <context:component-scan base-package="com.rmall" annotation-config="true"></context:component-scan>
+    <context:component-scan base-package="com.rmall.controller" annotation-config="true" use-default-filters="false">
+        <context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+    </context:component-scan>
     <mvc:annotation-driven>
         <mvc:message-converters>
             <bean class="org.springframework.http.converter.StringHttpMessageConverter">
@@ -37,4 +39,15 @@
         <!-- 设定默认编码 -->
         <property name="defaultEncoding" value="UTF-8"></property>
     </bean>
+    
+    <!--拦截器配置-->
+    <mvc:interceptors>
+        <!--定义在这里的是所有的都会拦截-->
+        <mvc:interceptor>
+            <!--在这里拦截指定的请求url-->
+            <mvc:mapping path="/manage/**"/>
+            <bean class="com.rmall.controller.common.interceptor.AuthorityInterceptor"/>
+        </mvc:interceptor>
+    </mvc:interceptors>
+    
 </beans>

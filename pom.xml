@@ -241,6 +241,26 @@
       <artifactId>jedis</artifactId>
       <version>2.6.0</version>
     </dependency>
+
+    <!-- spring session 单点登录 -->
+    <dependency>
+      <groupId>org.springframework.session</groupId>
+      <artifactId>spring-session-data-redis</artifactId>
+      <version>1.2.0.RELEASE</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.redisson</groupId>
+      <artifactId>redisson</artifactId>
+      <version>2.9.0</version>
+    </dependency>
+    <!--com.fasterxml.jackson.dataformat.avro.PackageVersion-->
+    <dependency>
+      <groupId>com.fasterxml.jackson.dataformat</groupId>
+      <artifactId>jackson-dataformat-avro</artifactId>
+      <version>2.9.0</version>
+    </dependency>
+
   </dependencies>
 
 

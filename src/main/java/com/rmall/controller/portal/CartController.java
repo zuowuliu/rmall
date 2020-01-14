@@ -7,7 +7,7 @@ import com.rmall.pojo.User;
 import com.rmall.service.ICartService;
 import com.rmall.util.CookieUtil;
 import com.rmall.util.JsonUtil;
-import com.rmall.util.RedisPoolUtil;
+import com.rmall.util.RedisShardedPoolUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -43,7 +43,7 @@ public class CartController {
         if(StringUtils.isEmpty(loginToken)){
             return ServerResponse.createByError("用户未登录，获取用户信息失败");
         }
-        String userJsonStr = RedisPoolUtil.get(loginToken);
+        String userJsonStr = RedisShardedPoolUtil.get(loginToken);
         User user = JsonUtil.string2Obj(userJsonStr, User.class);
         if(user == null){
             return ServerResponse.createByError(ResponseCode.NEED_LOGIN.getCode(), "当前没有用户登录，需要登录后再添加购物车");
@@ -62,7 +62,7 @@ public class CartController {
         if(StringUtils.isEmpty(loginToken)){
             return ServerResponse.createByError("用户未登录，获取用户信息失败");
         }
-        String userJsonStr = RedisPoolUtil.get(loginToken);
+        String userJsonStr = RedisShardedPoolUtil.get(loginToken);
         User user = JsonUtil.string2Obj(userJsonStr, User.class);
         if(user == null){
             return ServerResponse.createByError(ResponseCode.NEED_LOGIN.getCode(), "当前没有用户登录，需要登录后再添加购物车");
@@ -80,7 +80,7 @@ public class CartController {
         if(StringUtils.isEmpty(loginToken)){
             return ServerResponse.createByError("用户未登录，获取用户信息失败");
         }
-        String userJsonStr = RedisPoolUtil.get(loginToken);
+        String userJsonStr = RedisShardedPoolUtil.get(loginToken);
         User user = JsonUtil.string2Obj(userJsonStr, User.class);
         if(user == null){
             return ServerResponse.createByError(ResponseCode.NEED_LOGIN.getCode(), "当前没有用户登录，需要登录后再添加购物车");
@@ -98,7 +98,7 @@ public class CartController {
         if(StringUtils.isEmpty(loginToken)){
             return ServerResponse.createByError("用户未登录，获取用户信息失败");
         }
-        String userJsonStr = RedisPoolUtil.get(loginToken);
+        String userJsonStr = RedisShardedPoolUtil.get(loginToken);
         User user = JsonUtil.string2Obj(userJsonStr, User.class);
         if(user == null){
             return ServerResponse.createByError(ResponseCode.NEED_LOGIN.getCode(), "当前没有用户登录，需要登录后再添加购物车");
@@ -116,7 +116,7 @@ public class CartController {
         if(StringUtils.isEmpty(loginToken)){
             return ServerResponse.createByError("用户未登录，获取用户信息失败");
         }
-        String userJsonStr = RedisPoolUtil.get(loginToken);
+        String userJsonStr = RedisShardedPoolUtil.get(loginToken);
         User user = JsonUtil.string2Obj(userJsonStr, User.class);
         if(user == null){
             return ServerResponse.createByError(ResponseCode.NEED_LOGIN.getCode(), "当前没有用户登录，需要登录后再添加购物车");
@@ -134,7 +134,7 @@ public class CartController {
         if(StringUtils.isEmpty(loginToken)){
             return ServerResponse.createByError("用户未登录，获取用户信息失败");
         }
-        String userJsonStr = RedisPoolUtil.get(loginToken);
+        String userJsonStr = RedisShardedPoolUtil.get(loginToken);
         User user = JsonUtil.string2Obj(userJsonStr, User.class);
         if(user == null){
             return ServerResponse.createByError(ResponseCode.NEED_LOGIN.getCode(), "当前没有用户登录，需要登录后再添加购物车");
@@ -152,7 +152,7 @@ public class CartController {
         if(StringUtils.isEmpty(loginToken)){
             return ServerResponse.createByError("用户未登录，获取用户信息失败");
         }
-        String userJsonStr = RedisPoolUtil.get(loginToken);
+        String userJsonStr = RedisShardedPoolUtil.get(loginToken);
         User user = JsonUtil.string2Obj(userJsonStr, User.class);
         if(user == null){
             return ServerResponse.createByError(ResponseCode.NEED_LOGIN.getCode(), "当前没有用户登录，需要登录后再添加购物车");
@@ -170,7 +170,7 @@ public class CartController {
         if(StringUtils.isEmpty(loginToken)){
             return ServerResponse.createByError("用户未登录，获取用户信息失败");
         }
-        String userJsonStr = RedisPoolUtil.get(loginToken);
+        String userJsonStr = RedisShardedPoolUtil.get(loginToken);
         User user = JsonUtil.string2Obj(userJsonStr, User.class);
         if(user == null){
             return ServerResponse.createByError(ResponseCode.NEED_LOGIN.getCode(), "当前没有用户登录，需要登录后再添加购物车");
@@ -188,7 +188,7 @@ public class CartController {
         if(StringUtils.isEmpty(loginToken)){
             return ServerResponse.createByError("用户未登录，获取用户信息失败");
         }
-        String userJsonStr = RedisPoolUtil.get(loginToken);
+        String userJsonStr = RedisShardedPoolUtil.get(loginToken);
         User user = JsonUtil.string2Obj(userJsonStr, User.class);
         if(user==null){
             return ServerResponse.createBySuccess(0);

@@ -10,7 +10,7 @@ import com.rmall.pojo.User;
 import com.rmall.service.IShippingService;
 import com.rmall.util.CookieUtil;
 import com.rmall.util.JsonUtil;
-import com.rmall.util.RedisPoolUtil;
+import com.rmall.util.RedisShardedPoolUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -48,7 +48,7 @@ public class ShippingController {
         if(StringUtils.isEmpty(loginToken)){
             return ServerResponse.createByError("用户未登录，获取用户信息失败");
         }
-        String userJsonStr = RedisPoolUtil.get(loginToken);
+        String userJsonStr = RedisShardedPoolUtil.get(loginToken);
         User user = JsonUtil.string2Obj(userJsonStr, User.class);
         if(user== null){
             return ServerResponse.createByError(ResponseCode.NEED_LOGIN.getCode(), ResponseCode.NEED_LOGIN.getCondition());
@@ -69,7 +69,7 @@ public class ShippingController {
         if(StringUtils.isEmpty(loginToken)){
             return ServerResponse.createByError("用户未登录，获取用户信息失败");
         }
-        String userJsonStr = RedisPoolUtil.get(loginToken);
+        String userJsonStr = RedisShardedPoolUtil.get(loginToken);
         User user = JsonUtil.string2Obj(userJsonStr, User.class);
         if(user== null){
             return ServerResponse.createByError(ResponseCode.NEED_LOGIN.getCode(), ResponseCode.NEED_LOGIN.getCondition());
@@ -88,7 +88,7 @@ public class ShippingController {
         if(StringUtils.isEmpty(loginToken)){
             return ServerResponse.createByError("用户未登录，获取用户信息失败");
         }
-        String userJsonStr = RedisPoolUtil.get(loginToken);
+        String userJsonStr = RedisShardedPoolUtil.get(loginToken);
         User user = JsonUtil.string2Obj(userJsonStr, User.class);
         if(user== null){
             return ServerResponse.createByError(ResponseCode.NEED_LOGIN.getCode(), ResponseCode.NEED_LOGIN.getCondition());
@@ -106,7 +106,7 @@ public class ShippingController {
         if(StringUtils.isEmpty(loginToken)){
             return ServerResponse.createByError("用户未登录，获取用户信息失败");
         }
-        String userJsonStr = RedisPoolUtil.get(loginToken);
+        String userJsonStr = RedisShardedPoolUtil.get(loginToken);
         User user = JsonUtil.string2Obj(userJsonStr, User.class);
         if(user ==null){
             return ServerResponse.createByError(ResponseCode.NEED_LOGIN.getCode(),ResponseCode.NEED_LOGIN.getCondition());
@@ -127,7 +127,7 @@ public class ShippingController {
         if(StringUtils.isEmpty(loginToken)){
             return ServerResponse.createByError("用户未登录，获取用户信息失败");
         }
-        String userJsonStr = RedisPoolUtil.get(loginToken);
+        String userJsonStr = RedisShardedPoolUtil.get(loginToken);
         User user = JsonUtil.string2Obj(userJsonStr, User.class);
         if(user ==null){
             return ServerResponse.createByError(ResponseCode.NEED_LOGIN.getCode(),ResponseCode.NEED_LOGIN.getCondition());
