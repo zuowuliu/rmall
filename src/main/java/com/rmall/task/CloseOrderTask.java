@@ -64,7 +64,7 @@ public class CloseOrderTask {
      * 防死锁之分布式锁
      * @throws InterruptedException
      */
-//    @Scheduled(cron="0 */1 * * * ?")//每1分钟(每个1分钟的整数倍)
+    @Scheduled(cron="0 */1 * * * ?")//每1分钟(每个1分钟的整数倍)
     public void closeOrderTaskV3() throws InterruptedException {
         //防死锁分布式锁
         long lockTimeout = Long.parseLong(PropertiesUtil.getProperty("lock.timeout","50000"));//锁50秒有效期
