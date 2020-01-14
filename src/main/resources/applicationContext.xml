@@ -3,17 +3,22 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
        xmlns:tx="http://www.springframework.org/schema/tx" xmlns:jdbc="http://www.springframework.org/schema/jdbc"
        xmlns:context="http://www.springframework.org/schema/context"
-       xsi:schemaLocation="
-     http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+       xmlns:task="http://www.springframework.org/schema/task"
+       xsi:schemaLocation="http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
      http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
      http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
-     http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
+     http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task.xsd">
 
     <!--配置包的自动扫描，annotation-config="true"设置注册四个，使用注解-->
-    <context:component-scan base-package="com.rmall" annotation-config="true"></context:component-scan>
+    <context:component-scan base-package="com.rmall" annotation-config="true">
+        <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+    </context:component-scan>
 
     <!--将切面的注册交给bean，只在代码中使用@aspect即可-->
     <aop:aspectj-autoproxy></aop:aspectj-autoproxy>
+
+    <!--添加定时任务Spring Schedule的标签-->
+    <task:annotation-driven/>
 
     <!--将与数据有关的配置分离到另外一个配置文件中-->
     <import resource="applicationContext-datasource.xml"></import>

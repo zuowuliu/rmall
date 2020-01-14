@@ -25,4 +25,9 @@ public interface OrderMapper {
     List<Order> selectByUserId(Integer userId);
 
     List<Order> selectAll();
+
+    //二期新增定时关单
+    List<Order> selectOrderStatusByCreateTime(@Param("status")Integer status,@Param("date")String date);
+
+    int closeOrderCloseByOrderId(Integer id);
 }

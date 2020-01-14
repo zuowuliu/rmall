@@ -29,6 +29,7 @@ import com.rmall.vo.OrderVo;
 import com.rmall.vo.ShippingVo;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.time.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -691,6 +692,40 @@ public class OrderServiceImpl implements IOrderService {
             return ServerResponse.createBySuccess("发货成功");
         }
         return ServerResponse.createByError();
+    }
+
+
+    /**
+     * 定时关单，参数是小时。关闭X个小时之内未付款的订单，
+     * @param hour
+     *
+     * 写独占锁，用默认行锁， 一定要增加主键哟，否则就锁表
+     */
+    @Override
+    public void closeOrder(int hour) {
+        Date closeDateTime= DateUtils.addHours(new Date(),-hour);
+        List<Order> orderList = orderMapper.selectOrderStatusByCreateTime(Const.OrderSatusEnum.NO_PAY.getCode(), DateTimeUtil.dateToStr(closeDateTime));
+
+        for(Order order : orderList){
+            List<OrderItem> orderItemList = orderItemMapper.getByOrderNo(order.getOrderNo());
+            for(OrderItem orderItem : orderItemList){
+
+                //使用写独占锁，一定要用主键where条件，防止锁表。同时必须是支持MySQL的Innodb。
+                Integer stock = productMapper.selectStockByProductId(orderItem.getProductId());
+
+                //考虑到已生成的订单里的产品,被删除的情况
+                if(stock == null){
+                    continue;
+                }
+                Product product = new Product();
+                product.setId(orderItem.getProductId());
+                product.setStock(stock+orderItem.getQuantity());
+                productMapper.updateByPrimaryKeySelective(product);
+            }
+            orderMapper.closeOrderCloseByOrderId(order.getId());
+            logger.info("关闭订单OrderNo:{}",order.getOrderNo());
+        }
+
     }
 
 }

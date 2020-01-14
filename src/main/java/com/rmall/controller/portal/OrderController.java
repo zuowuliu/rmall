@@ -9,6 +9,10 @@ import com.rmall.common.ResponseCode;
 import com.rmall.common.ServerResponse;
 import com.rmall.pojo.User;
 import com.rmall.service.IOrderService;
+import com.rmall.util.CookieUtil;
+import com.rmall.util.JsonUtil;
+import com.rmall.util.RedisShardedPoolUtil;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,8 +48,13 @@ public class OrderController {
      * */
     @RequestMapping(value = "create.do",method = RequestMethod.POST)
     @ResponseBody
-    public ServerResponse create(HttpSession session, Integer shippingId){
-        User user = (User) session.getAttribute(Const.CURRENT_USER);
+    public ServerResponse create(HttpServletRequest httpServletRequest, Integer shippingId){
+        String loginToken = CookieUtil.readLoginToken(httpServletRequest);
+        if(StringUtils.isEmpty(loginToken)){
+            return ServerResponse.createByError("用户未登录，获取用户信息失败");
+        }
+        String userJsonStr = RedisShardedPoolUtil.get(loginToken);
+        User user = JsonUtil.string2Obj(userJsonStr, User.class);
         if(user == null){
             return ServerResponse.createByError(ResponseCode.NEED_LOGIN.getCode(), ResponseCode.NEED_LOGIN.getCondition());
         }
@@ -59,8 +68,13 @@ public class OrderController {
      * */
     @RequestMapping(value = "cancel.do",method = RequestMethod.POST)
     @ResponseBody
-    public ServerResponse cancel(HttpSession session, long orderNo){
-        User user = (User) session.getAttribute(Const.CURRENT_USER);
+    public ServerResponse cancel(HttpServletRequest httpServletRequest, long orderNo){
+        String loginToken = CookieUtil.readLoginToken(httpServletRequest);
+        if(StringUtils.isEmpty(loginToken)){
+            return ServerResponse.createByError("用户未登录，获取用户信息失败");
+        }
+        String userJsonStr = RedisShardedPoolUtil.get(loginToken);
+        User user = JsonUtil.string2Obj(userJsonStr, User.class);
         if(user == null){
             return ServerResponse.createByError(ResponseCode.NEED_LOGIN.getCode(), ResponseCode.NEED_LOGIN.getCondition());
         }
@@ -73,8 +87,13 @@ public class OrderController {
      * */
     @RequestMapping(value = "get_order_cart_product.do",method = RequestMethod.POST)
     @ResponseBody
-    public ServerResponse getOrderCartProduct(HttpSession session){
-        User user = (User) session.getAttribute(Const.CURRENT_USER);
+    public ServerResponse getOrderCartProduct(HttpServletRequest httpServletRequest){
+        String loginToken = CookieUtil.readLoginToken(httpServletRequest);
+        if(StringUtils.isEmpty(loginToken)){
+            return ServerResponse.createByError("用户未登录，获取用户信息失败");
+        }
+        String userJsonStr = RedisShardedPoolUtil.get(loginToken);
+        User user = JsonUtil.string2Obj(userJsonStr, User.class);
         if(user == null){
             return ServerResponse.createByError(ResponseCode.NEED_LOGIN.getCode(), ResponseCode.NEED_LOGIN.getCondition());
         }
@@ -87,8 +106,13 @@ public class OrderController {
      * */
     @RequestMapping(value = "detail.do",method = RequestMethod.POST)
     @ResponseBody
-    public ServerResponse getOrderDetail(HttpSession session,long orderNo){
-        User user = (User) session.getAttribute(Const.CURRENT_USER);
+    public ServerResponse getOrderDetail(HttpServletRequest httpServletRequest,long orderNo){
+        String loginToken = CookieUtil.readLoginToken(httpServletRequest);
+        if(StringUtils.isEmpty(loginToken)){
+            return ServerResponse.createByError("用户未登录，获取用户信息失败");
+        }
+        String userJsonStr = RedisShardedPoolUtil.get(loginToken);
+        User user = JsonUtil.string2Obj(userJsonStr, User.class);
         if(user == null){
             return ServerResponse.createByError(ResponseCode.NEED_LOGIN.getCode(), ResponseCode.NEED_LOGIN.getCondition());
         }
@@ -103,8 +127,13 @@ public class OrderController {
      * */
     @RequestMapping(value = "list.do",method = RequestMethod.POST)
     @ResponseBody
-    public ServerResponse list(HttpSession session, @RequestParam(value = "pageNum",defaultValue = "1")Integer pageNum, @RequestParam(value = "pageSize",defaultValue = "10") Integer pageSize){
-        User user = (User) session.getAttribute(Const.CURRENT_USER);
+    public ServerResponse list(HttpServletRequest httpServletRequest, @RequestParam(value = "pageNum",defaultValue = "1")Integer pageNum, @RequestParam(value = "pageSize",defaultValue = "10") Integer pageSize){
+        String loginToken = CookieUtil.readLoginToken(httpServletRequest);
+        if(StringUtils.isEmpty(loginToken)){
+            return ServerResponse.createByError("用户未登录，获取用户信息失败");
+        }
+        String userJsonStr = RedisShardedPoolUtil.get(loginToken);
+        User user = JsonUtil.string2Obj(userJsonStr, User.class);
         if(user == null){
             return ServerResponse.createByError(ResponseCode.NEED_LOGIN.getCode(), ResponseCode.NEED_LOGIN.getCondition());
         }
@@ -121,10 +150,15 @@ public class OrderController {
     @RequestMapping(value = "pay.do",method = RequestMethod.POST)
     @ResponseBody
     //传进来的订单号用于支付
-    public ServerResponse pay(HttpSession session, long orderNo, HttpServletRequest request){
+    public ServerResponse pay(HttpServletRequest httpServletRequest, long orderNo, HttpServletRequest request){
         //传入HttpServletRequest的作用，为了获取servlet上下文，获取upload那个文件夹，然后将自动生成的
         //二维码传到FTP服务器上，返回二维码的图片地址，前端将其进行展示用于扫码支付
-        User user = (User) session.getAttribute(Const.CURRENT_USER);
+        String loginToken = CookieUtil.readLoginToken(httpServletRequest);
+        if(StringUtils.isEmpty(loginToken)){
+            return ServerResponse.createByError("用户未登录，获取用户信息失败");
+        }
+        String userJsonStr = RedisShardedPoolUtil.get(loginToken);
+        User user = JsonUtil.string2Obj(userJsonStr, User.class);
         if(user == null){
             return ServerResponse.createByError(ResponseCode.NEED_LOGIN.getCode(), ResponseCode.NEED_LOGIN.getCondition());
         }
@@ -183,8 +217,13 @@ public class OrderController {
      * */
     @RequestMapping("query_order_pay_status.do")
     @ResponseBody
-    public ServerResponse<Boolean> queryOrderPayStatus(HttpSession session,Long orderNo){
-        User user = (User) session.getAttribute(Const.CURRENT_USER);
+    public ServerResponse<Boolean> queryOrderPayStatus(HttpServletRequest httpServletRequest,Long orderNo){
+        String loginToken = CookieUtil.readLoginToken(httpServletRequest);
+        if(StringUtils.isEmpty(loginToken)){
+            return ServerResponse.createByError("用户未登录，获取用户信息失败");
+        }
+        String userJsonStr = RedisShardedPoolUtil.get(loginToken);
+        User user = JsonUtil.string2Obj(userJsonStr, User.class);
         if(user == null){
             return ServerResponse.createByError(ResponseCode.NEED_LOGIN.getCode(), ResponseCode.NEED_LOGIN.getCondition());
         }

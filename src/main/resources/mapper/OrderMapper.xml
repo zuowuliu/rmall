@@ -234,4 +234,22 @@
     order by create_time desc
   </select>
 
+  <select id="selectOrderStatusByCreateTime" resultMap="BaseResultMap" parameterType="map">
+    SELECT
+    <include refid="Base_Column_List"/>
+    from rmall_order
+    where status = #{status}
+
+    <![CDATA[
+    and create_time <= #{date}
+    ]]>
+    ORDER BY  create_time desc
+  </select>
+
+  <update id="closeOrderCloseByOrderId" parameterType="int">
+    UPDATE rmall_order
+    SET status = 0
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
 </mapper>

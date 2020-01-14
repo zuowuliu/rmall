@@ -13,4 +13,5 @@ public interface IUserService {
     ServerResponse<String> LoginStatusRestPwd(String passwordOld,String passwordNew,User user);
     ServerResponse<User> getUserInformation(int id);
     ServerResponse<String> checkCurrentUserIfAdminUser(User user);
+    ServerResponse<User> updateInformation(User user);
 }

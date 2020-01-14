@@ -13,7 +13,7 @@ import java.util.Date;
  * 使用joda-time（DateTimeFormat,DateTimeFormatter）
  * */
 public class DateTimeUtil {
-    private static final String STANDARD_FORMAT="yyyy-MM-dd HH:mm:ss";
+    public static final String STANDARD_FORMAT="yyyy-MM-dd HH:mm:ss";
 
     //将str转换成datetime
     public static Date strToDate(String dateTimeStr, String formartStr){
